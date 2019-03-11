@@ -1,15 +1,22 @@
 version: '3'
 services:
     db:
-        image: postgres:9.3
+        image: mariadb:10.4
         environment:
-            POSTGRES_USER: smfuser
-            POSTGRES_PASSWORD: smfpass 
-            POSTGRES_DB: smfdb
+            MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+            MYSQL_USER: smfuser
+            MYSQL_PASSWORD: smfpass 
+            MYSQL_DATABASE: smfdb
+        volumes:
+          - mysql_data:/var/lib/mysql
     web:
         build: .
         ports:
             - "8000:80"
         depends_on:
             - db
-
+        volumes:
+          - smf_data:/var/www/html
+volumes:
+    mysql_data:
+    smf_data:
