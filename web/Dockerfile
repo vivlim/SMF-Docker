@@ -82,30 +82,16 @@ RUN  rm -rf /var/cache/apk/*
 
 RUN update-ca-certificates
 
-# Download and install SMF
-RUN mkdir -p /var/www/html \
-    && cd /var/www/html \
-    && wget "https://download.simplemachines.org/index.php/smf_2-0-15_install.tar.gz" \
-    && tar zxf smf_2-0-15_install.tar.gz
-
-# Set the permissions SMF wants. They say 777 suggested!
-RUN chmod 777 /var/www/html/attachments \
-    /var/www/html/avatars \
-    /var/www/html/cache \
-    /var/www/html/Packages \
-    /var/www/html/Packages/installed.list \
-    /var/www/html/Smileys \
-    /var/www/html/Themes \
-    /var/www/html/agreement.txt \
-    /var/www/html/Settings.php \
-    /var/www/html/Settings_bak.php
-
 # AllowOverride ALL
 RUN sed -i '264s#AllowOverride None#AllowOverride All#' /etc/apache2/httpd.conf
 #Rewrite Module Enable
 RUN sed -i 's#\#LoadModule rewrite_module modules/mod_rewrite.so#LoadModule rewrite_module modules/mod_rewrite.so#' /etc/apache2/httpd.conf
 # Document Root to /var/www/html/
 RUN sed -i 's#/var/www/localhost/htdocs#/var/www/html#g' /etc/apache2/httpd.conf
+
+# PHP debug logging
+RUN sed -i 's#; log_errors#log_errors = on#g' /etc/php5/php.ini
+RUN sed -i 's#display_errors = Off#display_errors = On#g' /etc/php5/php.ini
 
 #Start apache
 RUN mkdir -p /run/apache2
