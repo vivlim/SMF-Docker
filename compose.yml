@@ -1,0 +1,23 @@
+services:
+    db:
+        image: mariadb:10.4
+        userns_mode: "keep-id:uid=999,gid=999" # mariadb uid & gid
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+            MYSQL_USER: smfuser
+            MYSQL_PASSWORD: smfpass 
+            MYSQL_DATABASE: smfdb
+        volumes:
+          - ./mysql:/var/lib/mysql:z
+    web:
+        build: ./.container
+        user: 0:0
+        userns_mode: "keep-id:uid=100,gid=101" # apache uid & gid
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+        volumes:
+          - ./smf:/var/www/html:z
+          - ./httpd_logs:/var/log/apache2:z
+          - ./php_logs:/var/log/php82:z

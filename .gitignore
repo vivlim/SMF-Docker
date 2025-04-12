@@ -1,2 +1,6 @@
 backup.config.sh
 backups
+smf
+httpd_logs
+php_logs
+mysql
